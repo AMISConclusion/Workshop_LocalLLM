@@ -13,7 +13,7 @@
 		</MappedFolder>
 	</MappedFolders>
 	<ClipboardRedirection>true</ClipboardRedirection>
-	<MemoryInMB>8192</MemoryInMB>
+	<MemoryInMB>16384</MemoryInMB>
 	<LogonCommand>
 		<Command>C:\Users\WDAGUtilityAccount\Downloads\sandbox\sandboxprep.cmd</Command>
 	</LogonCommand>
