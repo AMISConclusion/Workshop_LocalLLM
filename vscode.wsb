@@ -1,5 +1,4 @@
 <Configuration>
-	<vGPU>Enable</vGPU>
 	<MappedFolders>
 		<MappedFolder>
 			<HostFolder>C:\sandbox\scripts</HostFolder>
