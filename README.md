@@ -22,5 +22,4 @@ git clone https://github.com/AMISConclusion/Workshop_LocalLLM.git sandbox
 c:\sandbox\vscode.wsb
 ```
 
-Once Windows Sandbox is launched, it will download and install the latest version of Visual Studio Code.  
-Also the `C:\sandbox\Projects` folder will be available inside Windows Sandbox under `Documents/Projects`
+Once Windows Sandbox is launched, it will download and install required files for the workshop.
