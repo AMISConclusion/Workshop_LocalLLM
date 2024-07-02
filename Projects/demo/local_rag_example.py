@@ -1,14 +1,13 @@
 import logging
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index import SimpleDocumentIndex
 from llama_index.core.schema import Document
 from llama_index.llms import HuggingFaceLLM
-import json
-import os
+import chromadb
+from chromadb.config import Settings
 
 # Configuration parameters
-EMBEDDING_MODEL = "mixedbread-ai/mxbai-embed-large-v1"
-LLM_MODEL = "gpt-3.5-turbo"  # Using a generic LLM model for illustration
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+LLM_MODEL = "gpt-3.5-turbo"
 QUESTION = "Which level 3 spells would be useful for a DND 5th edition eldritch knight elf focused on ranged combat?"
 LOGGING_LEVEL = logging.INFO
 
@@ -44,16 +43,29 @@ DOCUMENTS = [
     {"id": 20, "content": "Hypnotic Pattern charms and incapacitates creatures that can see it."}
 ]
 
-# Create and index documents
-index = SimpleDocumentIndex()
-for doc in DOCUMENTS:
-    document = Document(text=doc['content'], metadata={"id": doc['id']})
-    index.add_document(document)
+# Initialize ChromaDB client
+client = chromadb.PersistentClient(path="./chromadb_store")
+collection = client.get_or_create_collection(name="documents")
+
+def index_documents(documents):
+    """Index documents into ChromaDB."""
+    texts = [doc['content'] for doc in documents]
+    metadatas = [{"id": doc['id']} for doc in documents]
+    embeddings = embed_model.get_text_embedding_batch(texts)
+    
+    collection.add(
+        documents=texts,
+        metadatas=metadatas,
+        embeddings=embeddings
+    )
 
 def query_vector_store(query, top_k=5):
     """Query the indexed documents and return the most relevant ones."""
     query_embedding = embed_model.get_query_embedding(query)
-    results = index.query(query_embedding, top_k=top_k)
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=top_k
+    )
     return results
 
 def generate_answer(context, question):
@@ -63,11 +75,13 @@ def generate_answer(context, question):
     return response['choices'][0]['text'].strip()
 
 def main():
+    index_documents(DOCUMENTS)
+    
     logger.info(f"Querying vector store with question: {QUESTION}")
     results = query_vector_store(QUESTION, top_k=5)
 
     if results:
-        context = " ".join([doc.text for doc in results])
+        context = " ".join([doc for doc in results['documents']])
         answer = generate_answer(context, QUESTION)
         logger.info(f"Question: {QUESTION}\nAnswer: {answer}")
     else:
