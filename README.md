@@ -23,3 +23,5 @@ c:\sandbox\vscode.wsb
 ```
 
 Once Windows Sandbox is launched, it will download and install required files for the workshop. The download process consists of several Gbs and can take a while
+
+Read the document [here](https://github.com/AMISConclusion/Workshop_LocalLLM/blob/main/workshop%20local%20model.docx)  for the complete workshop 
