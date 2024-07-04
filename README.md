@@ -1,5 +1,5 @@
-# Windows Sandbox with VS Code Pre-Installed
-## Script to launch Windows Sandbox with latest VS Code installed
+# Windows Sandbox with various LLM tools Pre-Installed
+## Script to launch Windows Sandbox
 
 Windows Sandbox needs PRO version of the OS.   
 
@@ -22,4 +22,6 @@ git clone https://github.com/AMISConclusion/Workshop_LocalLLM.git sandbox
 c:\sandbox\vscode.wsb
 ```
 
-Once Windows Sandbox is launched, it will download and install required files for the workshop.
+Once Windows Sandbox is launched, it will download and install required files for the workshop. The download process consists of several Gbs and can take a while
+
+Read the document [here](https://github.com/AMISConclusion/Workshop_LocalLLM/blob/main/workshop%20local%20model.docx)  for the complete workshop 
