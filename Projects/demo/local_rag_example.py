@@ -24,7 +24,6 @@ embed_model = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL)
 documents = [
     {"id": str(uuid.uuid4()), "text": "Fireball: A powerful level 3 spell for dealing damage at range.", "source": "spell_guide.html"},
     {"id": str(uuid.uuid4()), "text": "Counterspell: Useful for negating enemy spells at a distance.", "source": "spell_guide.html"},
-    # Add 18 more hardcoded documents...
     {"id": str(uuid.uuid4()), "text": "Blink: Provides a defensive mechanism by teleporting the caster randomly.", "source": "spell_guide.html"},
     {"id": str(uuid.uuid4()), "text": "Haste: Enhances speed and combat effectiveness, but not specifically ranged.", "source": "spell_guide.html"},
     {"id": str(uuid.uuid4()), "text": "Water Breathing: Allows the caster to breathe underwater, situationally useful.", "source": "spell_guide.html"},
@@ -81,7 +80,18 @@ def generate_response(contexts, questions, llm_model):
 
 def index_documents(documents):
     client = chromadb.PersistentClient(path=STORAGE_PATH)
-    collection = client.create_collection(name="documents")
+    collection_name = "documents"
+    
+    # Remove existing collection if it exists
+    try:
+        existing_collection = client.get_collection(name=collection_name)
+        client.delete_collection(existing_collection.id)
+        logger.info(f"Existing collection '{collection_name}' deleted.")
+    except chromadb.CollectionNotFound:
+        logger.info(f"No existing collection '{collection_name}' found.")
+
+    # Create new collection
+    collection = client.create_collection(name=collection_name)
     texts = [doc["text"] for doc in documents]
     embeddings = get_text_embeddings(texts)
     metadatas = [{"source": doc["source"]} for doc in documents]
